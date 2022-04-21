@@ -1,0 +1,9 @@
+.ColBreadCrumb {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.linkButton:hover {
+    text-decoration: underline;
+    cursor: pointer;
+};

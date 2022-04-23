@@ -7,7 +7,12 @@ export const MainNav = [
     {
         icon: 'pe-7s-users',
         label: 'Orden',
-        to: '#/Pacientes/inicio',
+        to: '#/IngresoOrden/inicio',
+    },
+    {
+        icon: 'pe-7s-users',
+        label: 'Listado Ordenes',
+        to: '#/IngresoOrden/listado',
     },
     {
         icon: 'pe-7s-users',

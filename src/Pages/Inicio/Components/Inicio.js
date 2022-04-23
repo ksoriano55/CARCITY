@@ -10,7 +10,7 @@ import {
 import avatar4 from '../../../assets/utils/images/avatars/13.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
-import { obtenerCitasDiarias, obtenerValoresTotales } from '../Services/InicioServices'
+import { obtenerValoresTotales } from '../Services/InicioServices'
 import moment from "moment";
 
 const data = [
@@ -36,7 +36,6 @@ export const Inicio = () => {
     }, [])
 
     const obtenerCitas = async () => {
-        let cita = await obtenerCitasDiarias();
         let valores = await obtenerValoresTotales();
         setCitas([]);
         if(valores !== undefined && valores.length > 0){

@@ -6,7 +6,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import {Button } from '@material-ui/core';
 
-export const ListaColores = (props) => {
+export const ListaClientes = (props) => {
 
     const getMuiTheme = () => createMuiTheme({
         overrides: {
@@ -25,17 +25,31 @@ export const ListaColores = (props) => {
         }
     })
 
-    const HeadersListaColores = [
+    const Headers = [
         {
-            label:"Id Color",
-            name: "idColor",
+            label:"Id Cliente",
+            name: "idCliente",
             options: {
                 filter: true,
             }
         },
         {
-            label:"Descripción",
-            name: "descripcion",
+            label:"Nombre",
+            name: "nombre",
+            options: {
+                filter: true,
+            }
+        },
+        {
+            label:"Apellido",
+            name: "apellido",
+            options: {
+                filter: true,
+            }
+        },
+        {
+            label:"Telefono",
+            name: "telefono",
             options: {
                 filter: true,
             }
@@ -76,7 +90,7 @@ export const ListaColores = (props) => {
         ),
         textLabels: {
             body: {
-                noMatch: "No se han encontrado colores",
+                noMatch: "No se han encontrado clientes",
                 toolTip: "Ordenar",
             },
             pagination: {
@@ -110,20 +124,22 @@ export const ListaColores = (props) => {
     };
 
     const Data = () => {
-        let DataColores = [];
-        props.Colores.forEach(t => {
+        let DataClientes = [];
+        props.Clientes.forEach(t => {
             let data = [
-                        t.colorId,
-                        t.descripcion,
+                        t.clienteId,
+                        t.nombre,
+                        t.apellido,
+                        t.telefono,
                 <div>
                     <span className="mr-1">
                         <Button className='my-1' variant="outlined" onClick={() => props.openEditar(t)} size="small" color={"primary"}>Editar</Button>
                     </span>
                 </div>
             ]
-            DataColores.push(data);
+            DataClientes.push(data);
         });
-        return DataColores;
+        return DataClientes;
     }
 
     return (
@@ -131,9 +147,9 @@ export const ListaColores = (props) => {
             <div>
                 <MuiThemeProvider theme={getMuiTheme()}>
                     <MUIDataTable
-                        title={"Listado de Colores"}
+                        title={"Listado de Clientes"}
                         data={Data()}
-                        columns={HeadersListaColores}
+                        columns={Headers}
                         options={DatatableOptions}
 
                     />

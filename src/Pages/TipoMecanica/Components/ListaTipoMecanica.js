@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import TableFooter from "@material-ui/core/TableFooter";
@@ -6,7 +6,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import {Button } from '@material-ui/core';
 
-export const ListaColores = (props) => {
+export const ListaTipoMecanica = (props) => {
 
     const getMuiTheme = () => createMuiTheme({
         overrides: {
@@ -25,10 +25,10 @@ export const ListaColores = (props) => {
         }
     })
 
-    const HeadersListaColores = [
+    const Headers = [
         {
-            label:"Id Color",
-            name: "idColor",
+            label:"Id Tipo Mecanica",
+            name: "idTratamiento",
             options: {
                 filter: true,
             }
@@ -36,6 +36,13 @@ export const ListaColores = (props) => {
         {
             label:"Descripción",
             name: "descripcion",
+            options: {
+                filter: true,
+            }
+        },
+        {
+            label: "Estado",
+            name: "estado",
             options: {
                 filter: true,
             }
@@ -76,7 +83,7 @@ export const ListaColores = (props) => {
         ),
         textLabels: {
             body: {
-                noMatch: "No se han encontrado colores",
+                noMatch: "No se han encontrado tipos de Mecanica",
                 toolTip: "Ordenar",
             },
             pagination: {
@@ -110,20 +117,23 @@ export const ListaColores = (props) => {
     };
 
     const Data = () => {
-        let DataColores = [];
-        props.Colores.forEach(t => {
+        let DataTipoMecanica = [];
+        props.TipoMecanica.forEach(t => {
             let data = [
-                        t.colorId,
+                        t.mecanicaId,
                         t.descripcion,
+                        t.activo 
+                        ? <p style={{ color: 'green' }}>Activo</p>
+                        : <p style={{ color: 'red' }}>Inactivo</p>,
                 <div>
                     <span className="mr-1">
                         <Button className='my-1' variant="outlined" onClick={() => props.openEditar(t)} size="small" color={"primary"}>Editar</Button>
                     </span>
                 </div>
             ]
-            DataColores.push(data);
+            DataTipoMecanica.push(data);
         });
-        return DataColores;
+        return DataTipoMecanica;
     }
 
     return (
@@ -131,9 +141,9 @@ export const ListaColores = (props) => {
             <div>
                 <MuiThemeProvider theme={getMuiTheme()}>
                     <MUIDataTable
-                        title={"Listado de Colores"}
+                        title={"Listado de Tipo de Mecanica"}
                         data={Data()}
-                        columns={HeadersListaColores}
+                        columns={Headers}
                         options={DatatableOptions}
 
                     />

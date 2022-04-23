@@ -1,22 +1,23 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ListaColores } from './ListaColores'
+import { ListaTipoMecanica } from './ListaTipoMecanica'
 import { DialogContent, DialogTitle, DialogActions, TextField, FormControlLabel, Dialog } from '@material-ui/core';
 import CheckBox from '@material-ui/core/Checkbox';
 import { Formik, Form, Field } from 'formik';
 import * as yup from 'yup';
 import { Button } from 'reactstrap';
-import { ObtenerColores } from '../Services/ColoresServices'
+import { ObtenerTipoMecanica } from '../Services/TipoMecanicaServices'
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import { APIURL } from '../../../Utils/Environment';
-export const Colores = (props) => {
+
+export const TipoMecanica = (props) => {
     const [openModal, setOpenModal] = useState(false);
-    const [colores, setColores] = useState([]);
-    const [coloresSelected, setColoresSelected] = useState(null);
+    const [tipoMecanica, setTipoMecanica] = useState([]);
+    const [tipoMecanicaSelected, setTipoMecanicaSelected] = useState(null);
     const context = useRef();
 
     useEffect(() => {
-        cargarColores();
+        cargarTipoMecanica();
     }, [])
 
     const validationSchema = yup.object().shape(
@@ -24,14 +25,14 @@ export const Colores = (props) => {
             descripcion: yup.string().required('Este campo es obligatorio')
         });
 
-    const cargarColores = async () => {
-        let colores = await ObtenerColores();
-        setColores(colores);
+    const cargarTipoMecanica = async () => {
+        let tipoMecanica = await ObtenerTipoMecanica();
+        setTipoMecanica(tipoMecanica);
     }
 
-    const RegistrarColor = async (data) => {
+    const RegistrarTipoMecanica = async (data) => {
         try {
-            await axios.post(`${APIURL}api/colores/registrar`, data);
+            await axios.post(`${APIURL}api/tipoMecanica/registrar`, data);
             setOpenModal(false);
             Swal.fire({
                 icon: 'success',
@@ -39,10 +40,10 @@ export const Colores = (props) => {
                 showConfirmButton: false,
                 timer: 1500
             }).then(e => {
-                cargarColores();
+                cargarTipoMecanica();
             })
         } catch (err) {
-            let mensaje = "Ha ocurrido un error y no se ha registrado el color.";
+            let mensaje = "Ha ocurrido un error y no se ha registrado el tipo de mecanica.";
 
             if (err.response) {
                 mensaje = err.response.data.Message;
@@ -55,21 +56,21 @@ export const Colores = (props) => {
         }
     }
 
-    const ModificarColores = async (data) => {
+    const ModificarTipoMecanica = async (data) => {
         try {
-            await axios.post(`${APIURL}api/colores/modificar`, data);
+            await axios.post(`${APIURL}api/tipoMecanica/modificar`, data);
             setOpenModal(false);
-            setColoresSelected(null);
+            setTipoMecanicaSelected(null);
             Swal.fire({
                 icon: 'success',
                 title: 'Modificado Exitosamente',
                 showConfirmButton: false,
                 timer: 1500
             }).then(e => {
-                cargarColores();
+                cargarTipoMecanica();
             })
         } catch (err) {
-            let mensaje = "Ha ocurrido un error y no se ha registrado el color.";
+            let mensaje = "Ha ocurrido un error y no se ha registrado el tipo de mecanica.";
 
             if (err.response) {
                 mensaje = err.response.data.Message;
@@ -83,16 +84,16 @@ export const Colores = (props) => {
     }
 
     const openEditar = (tratamiento) => {
-        setColoresSelected(tratamiento);
+        setTipoMecanicaSelected(tratamiento);
         setOpenModal(true);
     }
 
     const openCerrar = () => {
-        setColoresSelected(null);
+        setTipoMecanicaSelected(null);
         setOpenModal(false);
     }
     let initialValues;
-    if (coloresSelected == null) {
+    if (tipoMecanicaSelected == null) {
         initialValues = {
             descripcion: '',
             activo: true
@@ -100,8 +101,9 @@ export const Colores = (props) => {
     }
     else {
         initialValues = {
-            colorId: coloresSelected.colorId,
-            descripcion: coloresSelected.descripcion
+            mecanicaId: tipoMecanicaSelected.mecanicaId,
+            descripcion: tipoMecanicaSelected.descripcion,            
+            activo: tipoMecanicaSelected.activo
         }
     }
 
@@ -113,18 +115,18 @@ export const Colores = (props) => {
             </div>
             
             {
-                <ListaColores Colores={colores} openEditar={openEditar} />
+                <ListaTipoMecanica TipoMecanica={tipoMecanica} openEditar={openEditar} />
             }
 
             <Dialog open={openModal} aria-labelledby="form-dialog-title">
-                <DialogTitle style={{ textAlign: 'center' }} id="form-dialog-title">REGISTRAR NUEVO COLOR</DialogTitle>
+                <DialogTitle style={{ textAlign: 'center' }} id="form-dialog-title">REGISTRAR TIPO MECANICA</DialogTitle>
                 <DialogContent>
                     <Formik
                         initialValues={initialValues}
                         enableReinitialize={true}
                         validationSchema={validationSchema}
                         onSubmit={(values) => {
-                            RegistrarColor(values);
+                            RegistrarTipoMecanica(values);
                         }}>
                         {({ errors, values }) => (
                             <div ref={context}>
@@ -133,22 +135,33 @@ export const Colores = (props) => {
                                         <Field
                                             id="descripcion"
                                             name="descripcion"
-                                            label= {<p>Colores <span style={{ color: 'red' }}>*</span></p>}
+                                            label= {<p>Tipo de Mecanica <span style={{ color: 'red' }}>*</span></p>}
                                             error={!!errors.descripcion}
                                             helperText={errors.descripcion}
                                             style={{ width: '455px', marginRight: '15px' }}
                                             as={TextField}
                                             className="form-control"
                                         />
-
-
+                                    </div>
+                                    <div className="form-group">
+                                        <FormControlLabel
+                                            control={
+                                                <Field
+                                                    type="checkbox"
+                                                    name="activo"
+                                                    checked={values.activo}
+                                                    as={CheckBox}
+                                                />
+                                            }
+                                            label={"Activar"}
+                                        />
                                     </div>
                                     <DialogActions>
                                         <Button onClick={() => { openCerrar() }} color="secondary">
                                             Cancelar
                                             </Button>
-                                        {coloresSelected != null && <Button color="primary" onClick={() => ModificarColores(values)}>Guardar</Button>}
-                                        {coloresSelected == null && <Button color="primary" type="submit">Guardar</Button>}
+                                        {tipoMecanicaSelected != null && <Button color="primary" onClick={() => ModificarTipoMecanica(values)}>Guardar</Button>}
+                                        {tipoMecanicaSelected == null && <Button color="primary" type="submit">Guardar</Button>}
                                     </DialogActions>
                                 </Form>
                             </div>

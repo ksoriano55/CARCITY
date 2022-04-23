@@ -8,6 +8,11 @@ export const MainNav = [
         icon: 'pe-7s-users',
         label: 'Orden',
         to: '#/Pacientes/inicio',
+    },
+    {
+        icon: 'pe-7s-users',
+        label: 'Clientes',
+        to: '#/Clientes/inicio',
     }
 ];
 export const ConfiguracionesNav = [
@@ -18,6 +23,10 @@ export const ConfiguracionesNav = [
             {
                 label: 'Colores ',
                 to: '#/colores/inicio',
+            },
+            {
+                label: 'Tipo Mecanica',
+                to: '#/tipoMecanica/inicio',
             },
         ],
     },

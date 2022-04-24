@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik,/* Form, */Field } from 'formik';
 import { TextField } from '@material-ui/core';
 import axios from 'axios';
 import * as yup from 'yup';
@@ -8,8 +8,10 @@ import { useHistory } from "react-router-dom";
 import '../../InicioSesion/Components/InicioSesion.css'
 import { setPermisos } from 'reducers/Permisos';
 import { useDispatch } from 'react-redux'
-
-export const InicioSesion = () => {
+import loginImg from 'assets/utils/images/login.png'
+import { Form, /*Icon,*/ Input, Button, Checkbox, message } from "antd";
+import 'antd/dist/antd.css';
+export const InicioSesion = (props) => {
     let history = useHistory();
     const context = useRef();
     const [msg, setSmg] = useState(null);
@@ -19,7 +21,8 @@ export const InicioSesion = () => {
         codigoUsuario: yup.string().required('Este campo es obligatorio'),
         newPassword: yup.string().required('Este campo es obligatorio')
     });
-
+    const FormItem = Form.Item;
+    //const { getFieldDecorator } = props.form;
     let initialValues;
     initialValues = {
         codigoUsuario: '',
@@ -30,7 +33,8 @@ export const InicioSesion = () => {
         try {
             setSmg(null);
             let request = await axios.get(`${APIURL}api/InicioSesion?codigoUsuario=` + data.codigoUsuario + `&newPassword=` + data.newPassword);
-            obtenerPermisos(request.data.usuario);
+            history.push("/IngresoOrden/listado");
+            //obtenerPermisos(request.data.usuario);
             localStorage.setItem("Token", request.data.Token)
             localStorage.setItem("Usuario", request.data.usuario)
 
@@ -56,61 +60,49 @@ export const InicioSesion = () => {
             setSmg(null);
             let request = await axios.get(`${APIURL}api/Accesos/${usuario}`);
             dispatch(setPermisos(request.data));
-            history.push("/home/Inicio");
+            history.push("/IngresoOrden/listado");
         }
         catch (err) {
             console.log("Ocurrion un error:", err.response.data.Message)
         }
     }
 
+   
     return (
-        <div className="outer" ref={context}>
-            <div className="inner">
-                <Formik
-                    initialValues={initialValues}
-                    enableReinitialize={true}
-                    validationSchema={validationSchema}
-                    onSubmit={(values) => { peticionIniciarSesion(values); }}>
-                    {({ errors
-                    }) => (
-                        <div ref={context}>
-                        <Form>
-                            <h3>CENAO</h3>
-                            <div className="form-group">
-                                <Field
-                                    id="codigoUsuario"
-                                    name="codigoUsuario"
-                                    label="Usuario"
-                                    error={!!errors.codigoUsuario}
-                                    helperText={errors.codigoUsuario}
-                                    as={TextField}
-                                    className="form-control"
-                                    autoComplete="off"
-                                />
+        <div>
+            <div className={"lContainer" + (false ? ' hidden' : ' ')}>
+                <div className="lItem">
+                    <div className="loginImage">
+                        <img src={loginImg} width="300" style={{ position: 'relative' }} alt="login" />
+                    </div>
+                    <div className="loginForm">
+                        <h2>Inicio Sesion</h2>
+                        <Form onFinish={peticionIniciarSesion} className="login-form">
 
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <Field
-                                    id="newPassword"
-                                    name="newPassword"
-                                    label="Contraseña"
-                                    error={!!errors.newPassword}
-                                    helperText={errors.newPassword}
-                                    as={TextField}
-                                    className="form-control"
-                                    autoComplete="off"
-                                    type="password"
-                                />
-                            </div>
+                            <Form.Item
+                                name="codigoUsuario"
+                                rules={[{ required: true, message: 'Porfavor ingrese su usuario!' }]}
+                            >
+                                <Input placeholder='Usuario'/>
+                            </Form.Item>
+                            <Form.Item
+                                name="newPassword"
+                                rules={[{ required: true, message: 'Porfavor ingrese su contraseña!' }]}
+                            >
+                                <Input.Password placeholder='Contraseña'/>
+                            </Form.Item>
                             {msg && <p style={{ color: "red" }}>{msg}</p>}
-                            <br></br>
-                            <br></br>
-                            <button type="submit" className="btn btn-dark btn-lg btn-block">ENTRAR</button>
+                            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                                <Button type="primary" htmlType="submit">
+                                    Ingresar
+                                </Button>
+                            </Form.Item>
                         </Form>
-                        </div>
-                    )}
-                </Formik>
+                    </div>
+                </div>
+                <div className="footer">
+                    <a href="" target="_blank" rel="noopener noreferrer" className="footerLink">Car City</a>
+                </div>
             </div>
         </div>
     );

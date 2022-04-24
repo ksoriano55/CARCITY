@@ -35,18 +35,18 @@ export const ConfiguracionesNav = [
             },
         ],
     },
-    /*{
+    {
         icon: 'pe-7s-shield',
         label: 'Seguridad',
         content: [
-            {
+           /* {
                 label: 'Asignar Permisos',
                 to: '#/AsignacionPermisos/inicio',
-            },
+            },*/
             {
                 label: 'Mantenimiento',
                 to: '#/Mantenimiento/inicio',
             },
         ],
-    },*/
+    },
 ];

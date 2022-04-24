@@ -33,12 +33,12 @@ const UserBox = () =>{
                                     </DropdownToggle>
                                     <DropdownMenu right className="rm-pointers dropdown-menu-lg">
                                         <Nav vertical>
-                                            <NavItem className="nav-item-header">
+                                            {/*<NavItem className="nav-item-header">
                                                 Mi cuenta
                                             </NavItem>
                                             <NavItem>
                                                 <NavLink href="#">Cambiar Contraseña</NavLink>
-                                            </NavItem>
+                                            </NavItem>*/}
                                             <NavItem className="nav-item-header">
                                                 Sesion
                                             </NavItem>
@@ -56,9 +56,9 @@ const UserBox = () =>{
                                 <div className="widget-heading">
                                     {localStorage.getItem("Usuario")}
                                 </div>
-                                <div className="widget-subheading">
+                                {/*<div className="widget-subheading">
                                     Administrador
-                                </div>
+        </div>*/}
                             </div>
 
                             <div className="widget-content-right header-user-info ml-3">

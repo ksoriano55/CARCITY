@@ -10,9 +10,10 @@ const Colores = lazy(() => import('../../Pages/Colores/Container'));
 const TipoMecanica = lazy(() => import('../../Pages/TipoMecanica/Container'));
 const Clientes = lazy(() => import('../../Pages/Clientes/Container'));
 const IngresoOrden = lazy(() => import('../../Pages/IngresoOrden/Container'));
+const Mantenimiento = lazy(() => import('../../Pages/Mantenimiento/Container'));
 
 const AppMain = () => {
-    let ruta= "/IngresoOrden/listado";
+    let ruta= localStorage.getItem("Token") !== undefined && localStorage.getItem("Token") !== null ? "/IngresoOrden/listado" : "/InicioSesion/Inicio";
     return (
         <Fragment>
 
@@ -89,6 +90,22 @@ const AppMain = () => {
                 </div>
             }>
                 <Route path="/ingresoOrden" component={IngresoOrden} />
+            </Suspense>
+
+            
+             {/* Ingreso Orden */}
+
+             <Suspense fallback={
+                <div className="loader-container">
+                    <div className="loader-container-inner">
+                        <h6 className="mt-5">
+                            Cargando..
+                            <small>Espere un momento por favor!</small>
+                        </h6>
+                    </div>
+                </div>
+            }>
+                <Route path="/mantenimiento" component={Mantenimiento} />
             </Suspense>
           
             <Suspense fallback={

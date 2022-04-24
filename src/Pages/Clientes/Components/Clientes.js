@@ -81,8 +81,8 @@ export const Clientes = (props) => {
         }
     }
 
-    const openEditar = (tratamiento) => {
-        setClienteSelected(tratamiento);
+    const openEditar = (cliente) => {
+        setClienteSelected(cliente);
         setOpenModal(true);
     }
 

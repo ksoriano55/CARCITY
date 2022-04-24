@@ -1,9 +1,9 @@
 export const MainNav = [
-    {
+    /*{
         icon: 'pe-7s-culture',
         label: 'Inicio',
         to: '#/home/inicio',
-    },
+    },*/
     {
         icon: 'pe-7s-users',
         label: 'Orden',

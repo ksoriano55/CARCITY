@@ -12,6 +12,7 @@ import { APIURL } from '../../../Utils/Environment';
 import { ObtenerColores } from '../../Colores/Services/ColoresServices';
 import { ObtenerClientes } from '../../Clientes/Services/ClientesServices';
 import { ObtenerTipoMecanica } from '../../TipoMecanica/Services/TipoMecanicaServices';
+import { useHistory } from "react-router-dom";
 
 export const FormularioIngresoOrden = () => {
 
@@ -19,7 +20,7 @@ export const FormularioIngresoOrden = () => {
     const [tipoMecanica, setTipoMecanica] = useState([]); //Drop Down List Tipo Mecanica
     const [colores, setColores] = useState([]); //Drop Down List Colores
     const context = useRef();
-
+    let history = useHistory();
     const estados = [
         { key: 'Seleccione Estado...', value: null }
         , { key: 'En Espera', value: 'En Espera' }
@@ -32,6 +33,10 @@ export const FormularioIngresoOrden = () => {
         getClientes();
         getTipoMecanica();
     }, [])
+
+    const RedirectListado = () => {
+        history.push("/IngresoOrden/listado");
+    }
 
     const getClientes = async () => {
         let obtenerCliente = await ObtenerClientes();
@@ -81,6 +86,7 @@ export const FormularioIngresoOrden = () => {
                 showConfirmButton: false,
                 timer: 1500
             })
+            RedirectListado();
         } catch (err) {
             console.log(err.response.data.Message);
             let mensaje = "No se pudo guardar el registro.";
@@ -219,9 +225,7 @@ export const FormularioIngresoOrden = () => {
                                         </Col>
                                     </Row>
 
-                                    (<Button className="mb-2 mr-2" color="primary" type="submit">Guardar</Button>)
-
-                                    <Button className="mb-2 mr-2" color="secondary" onClick={() => onCancelar()}>Cancelar</Button>
+                                    <Button className="mb-2 mr-2" color="primary" type="submit">Guardar</Button>
                                 </CardBody>
                             </Card>
                         </Form>

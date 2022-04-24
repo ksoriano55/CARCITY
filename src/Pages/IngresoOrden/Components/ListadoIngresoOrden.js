@@ -9,14 +9,25 @@ import { useHistory } from "react-router-dom";
 import { setPacienteSelected } from 'reducers/Paciente'
 import { useDispatch } from 'react-redux'
 import { ObtenerOrden } from '../Services/IngresoOrdenServices'
+import { DialogContent, DialogTitle, DialogActions, TextField, TextareaAutosize, Dialog } from '@material-ui/core';
+import { Formik, Form, Field } from 'formik';
+import moment from 'moment';
 
 export const ListadoIngresoOrden = (props) => {
     let history = useHistory();
     const dispatch = useDispatch();
     const [ordenes, setOrdenes] = useState([]);
+    const [ordenSelected, setOrdenSelected] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
     useEffect(() => {
         cargarOrdenes();
     }, [])
+
+    /*const estados = [
+          { key: 'En Espera', value: 'En Espera' }
+        , { key: 'En Proceso', value: 'En Proceso' }
+        , { key: 'Cerrado', value: 'Cerrado' }
+    ]*/
 
     const cargarOrdenes = async () => {
         let Orden = await ObtenerOrden();
@@ -88,23 +99,26 @@ export const ListadoIngresoOrden = (props) => {
 
     const Data = () => {
         let DataPacientes = [];
-        ordenes.forEach(p => {
-            let data = [
-                p.descripcionMecanica,
-                p.diagnostico,
-                p.fechaIngreso,
-                p.nombreCliente + " " + p.apellidoCliente,
-                <div>
-                    <span className="mr-1">
-                        <Button className='my-1' variant="outlined" onClick={() => props.editar(p)} size="small" color={"primary"}>Ver Detalle</Button>
-                    </span>
-                    <span className="mr-1">
-                        <Button className='my-1' variant="outlined" onClick={() => RedirectDetalle(p.numExpediente, p)} size="small" color={"primary"}>Iniciar</Button>
-                    </span>
-                </div>
-            ]
-            DataPacientes.push(data);
-        });
+        if (ordenes.length > 0) {
+            ordenes.forEach(p => {
+                let data = [
+                    p.descripcionMecanica,
+                    p.diagnostico,
+                    moment(p.fechaIngreso).format("DD/MM/YYYY"),
+                    p.nombreCliente + " " + p.apellidoCliente,
+                    <div>
+                        <span className="mr-1">
+                            <Button className='my-1' variant="outlined" onClick={() => openDetalle(p)} size="small" color={"primary"}>Ver Detalle</Button>
+                        </span>
+                        <span className="mr-1">
+                            <Button className='my-1' variant="outlined" onClick={() => RedirectDetalle(p.numExpediente, p)} size="small" color={"primary"}>Iniciar</Button>
+                        </span>
+                    </div>
+                ]
+                DataPacientes.push(data);
+            });
+        }
+
         return DataPacientes;
     }
 
@@ -166,16 +180,129 @@ export const ListadoIngresoOrden = (props) => {
         }
     };
 
+    const openDetalle = (orden) => {
+        setOrdenSelected(orden);
+        setOpenModal(true);
+    }
+
+    const openCerrar = () => {
+        setOrdenSelected(null);
+        setOpenModal(false);
+    }
+    let initialValues;
+    if (ordenSelected != null) {
+        console.log("ordenSelected",ordenSelected)
+        initialValues = {
+            descripcionMecanica: ordenSelected.descripcionMecanica,
+            diagnostico: ordenSelected.diagnostico
+        }
+    }
     return (
+        <>
+        <Dialog open={openModal} aria-labelledby="form-dialog-title">
+                <DialogTitle style={{ textAlign: 'center' }} id="form-dialog-title">DETALLE DE LA ORDEN</DialogTitle>
+                <DialogContent>
+                    <Formik
+                        initialValues={initialValues}
+                        enableReinitialize={true}
+                        //validationSchema={validationSchema}
+                        onSubmit={(values) => {
+                        }}>
+                        {({ errors, values }) => (
+                            <div /*ref={context}*/>
+                                <Form>
+                                    <div className="form-group">
+                                        
+                                        <Field
+                                            disabled
+                                            id="descripcionMecanica"
+                                            name="descripcionMecanica"
+                                            style={{ width: '455px', marginRight: '15px' }}
+                                            as={TextField}
+                                            className="form-control"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Dirección</label>
+                                        <Field
+                                            disabled
+                                            id="diagnostico"
+                                            name="diagnostico"
+                                            style={{ width: '455px', marginRight: '15px' }}
+                                            as={TextareaAutosize}
+                                            className="form-control"
+                                        />
+                                    </div>
+                                    <DialogActions>
+                                        <Button onClick={() => { openCerrar() }} color="secondary">
+                                            Cancelar
+                                            </Button>
+                                    </DialogActions>
+                                </Form>
+                            </div>
+                        )}
+                    </Formik>
+                </DialogContent>
+            </Dialog>
         <div className="px-3">
-            <MuiThemeProvider theme={getMuiTheme()}>
-                <MUIDataTable
-                    title={"Listado de Ordenes"}
-                    data={Data()}
-                    columns={HeaderPacientes}
-                    options={DatatableOptions}
-                />
-            </MuiThemeProvider>
+            <div className="row mb-3">
+               {/*<div className='col-lg-2 my-lg-0 col-6 my-1'>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <DatePicker
+                            disableToolbar
+                            autoOk
+                            label={"Fecha Inicio"}
+                            variant="inline"
+                            format={"DD/MM/YYYY"}
+                            value={props.startDate}
+                           // onChange={(date) => props.handleFechaInicio(date)}
+                        />
+                    </MuiPickersUtilsProvider>
+                </div> */} 
+              {/* <div className='col-lg-2 my-lg-0 col-6 my-1'>
+                    <DatePicker
+                        disableToolbar
+                        autoOk
+                        label={"Fecha Fin"}
+                        variant="inline"
+                        minDate={props.startDate}
+                        format={"DD/MM/YYYY"}
+                        value={props.endDate}
+                        onChange={(date) => props.handleFechaFin(date)}
+                    />
+                </div>
+                <div className='col-lg-2 my-lg-0 col-6 my-1'>
+                    <Dropdown
+                        placeholder="Estado"
+                        selection
+                       // style={{ zIndex: 999 }}
+                        onChange={(e, { value }) => props.handleOnChangeAsesor(value)}
+                        options={estados}
+                        noResultsMessage={"No hay resultados"}
+                        closeOnChange={true}
+                        value={props.AsesorSelected}
+                    />
+                </div>
+                <div className="col-lg-1 col-sm-2 col-4" style={{ paddingTop: 10 }}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => props.cargarRecibos(props.startDate, props.endDate)}
+                    >Obtener
+                    </Button>
+                </div>*/}
+            </div>
+            <div>
+                <MuiThemeProvider theme={getMuiTheme()}>
+                    <MUIDataTable
+                        title={"Listado de Ordenes"}
+                        data={Data()}
+                        columns={HeaderPacientes}
+                        options={DatatableOptions}
+                    />
+                </MuiThemeProvider>
+            </div>
         </div>
+        </>
     );
 }

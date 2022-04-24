@@ -125,20 +125,22 @@ export const ListaClientes = (props) => {
 
     const Data = () => {
         let DataClientes = [];
-        props.Clientes.forEach(t => {
-            let data = [
-                        t.clienteId,
-                        t.nombre,
-                        t.apellido,
-                        t.telefono,
-                <div>
-                    <span className="mr-1">
-                        <Button className='my-1' variant="outlined" onClick={() => props.openEditar(t)} size="small" color={"primary"}>Editar</Button>
-                    </span>
-                </div>
-            ]
-            DataClientes.push(data);
-        });
+        if(props.Clientes.length>0){
+            props.Clientes.forEach(t => {
+                let data = [
+                            t.clienteId,
+                            t.nombre,
+                            t.apellido,
+                            t.telefono,
+                    <div>
+                        <span className="mr-1">
+                            <Button className='my-1' variant="outlined" onClick={() => props.openEditar(t)} size="small" color={"primary"}>Editar</Button>
+                        </span>
+                    </div>
+                ]
+                DataClientes.push(data);
+            });
+        }
         return DataClientes;
     }
 

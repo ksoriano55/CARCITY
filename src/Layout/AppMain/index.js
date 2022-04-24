@@ -12,7 +12,7 @@ const Clientes = lazy(() => import('../../Pages/Clientes/Container'));
 const IngresoOrden = lazy(() => import('../../Pages/IngresoOrden/Container'));
 
 const AppMain = () => {
-    let ruta= "/Home/Inicio";
+    let ruta= "/IngresoOrden/listado";
     return (
         <Fragment>
 

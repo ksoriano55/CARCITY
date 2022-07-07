@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import TableFooter from "@material-ui/core/TableFooter";
@@ -12,6 +13,8 @@ import { ObtenerOrden } from '../Services/IngresoOrdenServices'
 import { DialogContent, DialogTitle, DialogActions, TextField, TextareaAutosize, Dialog } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
 import moment from 'moment';
+import { APIURL } from '../../../Utils/Environment';
+import Swal from 'sweetalert2';
 
 export const ListadoIngresoOrden = (props) => {
     let history = useHistory();
@@ -23,21 +26,32 @@ export const ListadoIngresoOrden = (props) => {
         cargarOrdenes();
     }, [])
 
-    /*const estados = [
-          { key: 'En Espera', value: 'En Espera' }
-        , { key: 'En Proceso', value: 'En Proceso' }
-        , { key: 'Cerrado', value: 'Cerrado' }
-    ]*/
-
     const cargarOrdenes = async () => {
         let Orden = await ObtenerOrden();
         setOrdenes(Orden);
     }
 
-    const RedirectDetalle = (pacienteSelected) => {
-        dispatch(setPacienteSelected(pacienteSelected));
-        history.push("/Pacientes/Detalle");
+    const iniciarOrden = async (orden) => {
+        try {
+            await axios.post(`${APIURL}api/ingresoOrden/iniciarOrden`, orden, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('Token')
+                }
+            });
+            cargarOrdenes();
+        } catch (err) {
+            console.log(err.response.data.Message);
+            let mensaje = "No se pudo iniciar la orden.";
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Error: ' + mensaje,
+                timer: 1500
+            })
+        }
     }
+    
 
     const getMuiTheme = () => createMuiTheme({
         overrides: {
@@ -86,6 +100,13 @@ export const ListadoIngresoOrden = (props) => {
             }
         },
         {
+            label: "Estado",
+            name: "Estado",
+            options: {
+                filter: true,
+            }
+        },
+        {
             name: "Acciones",
             label: "Acciones",
             options: {
@@ -106,12 +127,13 @@ export const ListadoIngresoOrden = (props) => {
                     p.diagnostico,
                     moment(p.fechaIngreso).format("DD/MM/YYYY"),
                     p.nombreCliente + " " + p.apellidoCliente,
+                    p.Estado,
                     <div>
                         <span className="mr-1">
                             <Button className='my-1' variant="outlined" onClick={() => openDetalle(p)} size="small" color={"primary"}>Ver Detalle</Button>
                         </span>
                         <span className="mr-1">
-                            <Button className='my-1' variant="outlined" onClick={() => RedirectDetalle(p.numExpediente, p)} size="small" color={"primary"}>Iniciar</Button>
+                            <Button className='my-1' variant="outlined" onClick={() => iniciarOrden(p)} size="small" color={"primary"}>Iniciar</Button>
                         </span>
                     </div>
                 ]
@@ -223,7 +245,7 @@ export const ListadoIngresoOrden = (props) => {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label>Dirección</label>
+                                        <label>Diagnostico</label>
                                         <Field
                                             disabled
                                             id="diagnostico"
